@@ -19,8 +19,8 @@ public class EntryLogController {
     private EntryLogService entryLogService; 
 
     @GetMapping("/saveEntryLog")
-    public String saveEntryLog(@RequestBody UniversityEntryLog entrylog) {
-        entryLogService.saveEntryLog(entrylog);
+    public String saveEntryLog() {
+        entryLogService.saveEntryLog();
         return String.format("saved..");
     }
 }
