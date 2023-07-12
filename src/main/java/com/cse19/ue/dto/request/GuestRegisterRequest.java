@@ -1,5 +1,6 @@
 package com.cse19.ue.dto.request;
 
+import com.cse19.ue.model.Gender;
 import com.cse19.ue.model.Title;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +18,12 @@ public class GuestRegisterRequest {
     private String NIC;
     private String gender;
     private String inviterIndex;
+
+    public Gender getGender() {
+        if(this.gender.equals(Gender.MALE.toString()))
+            return Gender.MALE;
+        else if(this.gender.equals(Gender.FEMALE.toString()))
+            return Gender.FEMALE;
+        return null;
+    }
 }
