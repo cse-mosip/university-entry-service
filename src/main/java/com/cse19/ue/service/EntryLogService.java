@@ -15,8 +15,10 @@ public class EntryLogService {
     @Autowired
     private EntryLogRepository entryRepository;
 
-    public void saveEntryLog(UniversityEntryLog entrylog) {
+    public void saveEntryLog() {
         // TODO: verfy from MOSIP
-        entryRepository.save(entrylog);
+        UniversityEntryLog ueLog = new UniversityEntryLog();
+        // create a sample entry log
+        entryRepository.save(ueLog);
     }
 }
