@@ -1,5 +1,6 @@
 package com.cse19.ue.controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,11 @@ public class EntryLogController {
 
     @GetMapping("/saveEntryLog")
     public ResponseEntity<UserVerificationResponse> saveEntryLog() {
-        return ResponseEntity.ok(entryLogService.saveEntryLog());
-        
+        try {
+            UserVerificationResponse response = entryLogService.saveEntryLog();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

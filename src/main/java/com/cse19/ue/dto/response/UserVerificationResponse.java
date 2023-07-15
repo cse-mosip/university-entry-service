@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserVerificationResponse {
     private String studentName;
     private String index;
-    private String verification;
+    private String verificationStatus;
 }

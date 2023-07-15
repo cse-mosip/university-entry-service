@@ -28,13 +28,18 @@ public class EntryService {
 
 
     public UserVerificationResponse saveEntryLog() {
+        try {
         
-        // TODO: verify from auth server
+            // TODO: verify from auth server
 
-        UniversityEntryLog universityEntryLog = new UniversityEntryLog();
-        entryLogRepository.save(universityEntryLog);
+            UniversityEntryLog universityEntryLog = new UniversityEntryLog();
+            entryLogRepository.save(universityEntryLog);
 
-        return new UserVerificationResponse("kumara", "190999A", "verified");
+            return new UserVerificationResponse("kumara", "190999A", "verified");
+        } catch (Exception e) {
 
+            return new UserVerificationResponse("kumara", "190999A", "failed");
+
+        }
     }
 }
