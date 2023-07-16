@@ -28,3 +28,30 @@
 
 
 
+## Deployment
+
+### Docker
+
+This application can be built and run using Docker. To do so, you need to have Docker installed on your machine.
+
+#### Building the Docker image
+
+Run the following command to build the Docker image. Replace `my-spring-app` with the desired image name.
+
+```shell
+docker build -t entry-service .
+```
+#### Running the Docker container
+You can start the application using the following command:
+
+```shell
+docker run -p 8080:8080 \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://[host]:[port]/[db] \
+-e SPRING_DATASOURCE_USERNAME=[username] \
+-e SPRING_DATASOURCE_PASSWORD=[password] \
+-e SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver \
+-e JWT_SECRET=[jwt-secret] \
+-e JWT_EXPIRATION=[expire-time] \
+entry-service
+```
+
