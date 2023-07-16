@@ -22,11 +22,6 @@ public class EntryService {
     @Autowired
     private EntryLogRepository entryLogRepository;
 
-    public EntryService(EntryLogRepository entryLogRepository) {
-        this.entryLogRepository = entryLogRepository;
-    }
-
-
     public UserVerificationResponse saveEntryLog() {
         try {
         

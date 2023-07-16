@@ -22,10 +22,6 @@ public class EntryLogController {
     @Autowired
     private EntryService entryLogService; 
 
-    public EntryLogController(EntryService entryService) {
-        this.entryLogService = entryService;
-    }
-
     @GetMapping("/saveEntryLog")
     public ResponseEntity<UserVerificationResponse> saveEntryLog() {
         try {
