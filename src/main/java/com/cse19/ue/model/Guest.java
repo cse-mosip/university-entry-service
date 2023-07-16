@@ -34,4 +34,8 @@ public class Guest {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approver_id", nullable = false)
     private User approver;
+
+    public void setTimestamp() {
+        this.timestamp = LocalDateTime.now();
+    }
 }
