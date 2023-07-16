@@ -24,7 +24,7 @@ public class GuestRegisterRequest {
     private String NIC;
     private String gender;
     private String inviterIndex;
-    private String bioSign;
+    private Object bioSign;
     private String approverId;
 
     public Gender getGender() {
@@ -33,5 +33,19 @@ public class GuestRegisterRequest {
         else if(this.gender.equals(Gender.FEMALE.toString()))
             return Gender.FEMALE;
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "GuestRegisterRequest{" +
+                "title='" + title + '\'' +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", NIC='" + NIC + '\'' +
+                ", gender='" + gender + '\'' +
+                ", inviterIndex='" + inviterIndex + '\'' +
+                ", bioSign=" + bioSign +
+                ", approverId='" + approverId + '\'' +
+                '}';
     }
 }
