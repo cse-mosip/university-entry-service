@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - release  # Change this to match your release branch name
+      - dev  # Change this to match your release branch name
 
 pool:
   vmImage: 'ubuntu-latest'

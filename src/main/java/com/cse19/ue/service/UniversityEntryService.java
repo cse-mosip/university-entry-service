@@ -3,6 +3,7 @@ package com.cse19.ue.service;
 import com.cse19.ue.dto.request.GuestRegisterRequest;
 import com.cse19.ue.exception.Exceptions;
 import com.cse19.ue.exception.ResponseStatusCodes;
+import com.cse19.ue.model.Gender;
 import com.cse19.ue.model.Guest;
 import com.cse19.ue.model.User;
 import com.cse19.ue.repository.GuestRepository;
@@ -33,7 +34,7 @@ public class UniversityEntryService{
         return true;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+
     public User retrieveUser(String approverId){
         //logic for retriever user using id
         if(false)
@@ -41,7 +42,7 @@ public class UniversityEntryService{
         return new User();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+
     public Guest addGuest(GuestRegisterRequest request){
         System.out.println(request.toString());
         validateBSign(request.getBioSign());
@@ -49,13 +50,17 @@ public class UniversityEntryService{
         Guest guest = new Guest();
 
         // get User from request.getApproverId()
-        guest.setApprover(retrieveUser(request.getApproverId()));
+        guest.setApprover(new User(){{
+            setId(request.getApproverId());
+        }});
 
         guest.setInviterIndex(request.getInviterIndex());
         guest.setName(request.getName());
         guest.setNIC(request.getNIC());
-        guest.setGender(request.getGender());
+//        String gender = request.getGender();
+        guest.setGender( request.getGender());
         guest.setPhoneNumber(request.getPhoneNumber());
+        guest.setTitle(request.getTitle());
         guest.setTimestamp();
 
 

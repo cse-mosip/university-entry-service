@@ -18,22 +18,22 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GuestRegisterRequest {
-    private String title;
+    private Title title;
     private String name;
     private String phoneNumber;
     private String NIC;
-    private String gender;
+    private Gender gender;
     private String inviterIndex;
     private Object bioSign;
-    private String approverId;
+    private Long approverId;
 
-    public Gender getGender() {
-        if(this.gender.equals(Gender.MALE.toString()))
-            return Gender.MALE;
-        else if(this.gender.equals(Gender.FEMALE.toString()))
-            return Gender.FEMALE;
-        return null;
-    }
+//    public Gender getGender() {
+//        if(this.gender.equals(Gender.MALE.toString()))
+//            return Gender.MALE;
+//        else if(this.gender.equals(Gender.FEMALE.toString()))
+//            return Gender.FEMALE;
+//        return Gender.MALE;
+//    }
 
     @Override
     public String toString() {
