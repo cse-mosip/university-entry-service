@@ -22,7 +22,7 @@ FROM openjdk:17-jdk-slim
 VOLUME /tmp
 
 # Add the application's jar to the container
-COPY --from=build /workspace/app/target/UE-0.0.1-SNAPSHOT.jar UE.jar
+COPY --from=build /workspace/app/target/UE-0.0.1-SNAPSHOT.jar entry-service.jar
 
 # Run the jar file 
-ENTRYPOINT ["java","-jar","/UE.jar"]
+ENTRYPOINT ["java","-jar","/entry-service.jar"]
