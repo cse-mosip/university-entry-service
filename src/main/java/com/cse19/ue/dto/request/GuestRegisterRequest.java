@@ -2,6 +2,10 @@ package com.cse19.ue.dto.request;
 
 import com.cse19.ue.model.Gender;
 import com.cse19.ue.model.Title;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GuestRegisterRequest {
     private String title;
     private String name;
@@ -18,6 +24,8 @@ public class GuestRegisterRequest {
     private String NIC;
     private String gender;
     private String inviterIndex;
+    private String bioSign;
+    private String approverId;
 
     public Gender getGender() {
         if(this.gender.equals(Gender.MALE.toString()))

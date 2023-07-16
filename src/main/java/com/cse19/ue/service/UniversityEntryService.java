@@ -13,21 +13,45 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UniversityEntryService{
     private GuestRepository guestRepository;
+
     @Autowired
     public UniversityEntryService(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public String addGuest(GuestRegisterRequest request,String approverId,Object bSign){
-
+    public Object validateBSign(Object bSign){
         if(bSign == null){
+            System.out.println("bsign is null");
             throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_CANNOT_BE_NULL);
+        }else if(false){
+            System.out.println("bsign is false");
+
+//            update condition with biometric response receiving method
+            throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_IS_NOT_MATCHING);
         }
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public User retrieveUser(String approverId){
+        //logic for retriever user using id
+        if(false)
+            throw new Exceptions(ResponseStatusCodes.USER_NOT_EXIST_FOR_APPROVER_ID);
+        return new User();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Guest addGuest(GuestRegisterRequest request){
+        System.out.println(request.toString());
+        validateBSign(request.getBioSign());
 
         Guest guest = new Guest();
 
-        guest.setInviterIndex("190999H");
+        // get User from request.getApproverId()
+        guest.setApprover(retrieveUser(request.getApproverId()));
+
+        guest.setInviterIndex(request.getInviterIndex());
         guest.setName(request.getName());
         guest.setNIC(request.getNIC());
         guest.setGender(request.getGender());
@@ -35,10 +59,6 @@ public class UniversityEntryService{
         guest.setTimestamp();
 
 
-        // get User from approverId
-        guest.setApprover(new User());
-
-        guestRepository.save(guest);
-        return "guest record added successfully";
+        return guestRepository.save(guest);
     }
 }
