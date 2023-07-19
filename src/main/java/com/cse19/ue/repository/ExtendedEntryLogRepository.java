@@ -6,7 +6,6 @@ import com.cse19.ue.model.UniversityEntryLog;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +14,7 @@ import java.util.*;
 
 @Slf4j
 @Repository
-public class EntranceLogRepository {
+public class ExtendedEntryLogRepository {
     @PersistenceContext
     private EntityManager entityManager;
 

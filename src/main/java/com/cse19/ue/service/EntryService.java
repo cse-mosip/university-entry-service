@@ -1,30 +1,40 @@
 package com.cse19.ue.service;
 
+
+import com.cse19.ue.dto.response.EntranceRecordsResponse;
+import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.model.UniversityEntryLog;
+import com.cse19.ue.repository.ExtendedEntryLogRepository;
+import com.cse19.ue.repository.EntryLogRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import com.cse19.ue.dto.response.UserVerificationResponse;
-import com.cse19.ue.model.EntryPlace;
-import com.cse19.ue.model.EntryState;
-import com.cse19.ue.model.Role;
-import com.cse19.ue.model.UniversityEntryLog;
-import com.cse19.ue.model.User;
-import com.cse19.ue.repository.EntryLogRepository;
-
-import lombok.RequiredArgsConstructor;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EntryService {
+    private final EntryLogRepository entryLogRepository;
+    private final ExtendedEntryLogRepository extendedEntryLogRepository;
 
-    @Autowired
-    private EntryLogRepository entryLogRepository;
+    public EntranceRecordsResponse entranceRecords(
+            String index,
+            String faculty,
+            LocalDateTime fromDate,
+            LocalDateTime toDate,
+            int skip,
+            int take
+    ) {
+
+        return extendedEntryLogRepository.filterEntranceLogs(index, faculty, fromDate, toDate, skip, take);
+    }
+
 
     public UserVerificationResponse saveEntryLog() {
         try {
-        
+
             // TODO: verify from auth server
 
             UniversityEntryLog universityEntryLog = new UniversityEntryLog();
@@ -37,4 +47,5 @@ public class EntryService {
 
         }
     }
+
 }

@@ -1,8 +1,8 @@
 package com.cse19.ue.controller;
 
-import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
-import com.cse19.ue.service.EntryServices;
+import com.cse19.ue.dto.response.PersonInfo;
+import com.cse19.ue.service.EntryService;
 import com.cse19.ue.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +15,12 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin")
-public class AdminController {
-    private final EntryServices entryServices;
+@RequestMapping("/api/v1/info")
+public class InfoController {
+    private final EntryService entryService;
     private final PersonService personService;
 
-    @GetMapping("/")
-    public String register() {
-        return "hello";
-    }
-
-    @GetMapping("/person/{index}")
+    @GetMapping("/{index}")
     public ResponseEntity<PersonInfo> entranceRecordsByIndex(@PathVariable String index) {
 //        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String token = "sdfswedfsd-security-token"; //jwt.getTokenValue();
@@ -66,13 +61,11 @@ public class AdminController {
             log.error("Error parsing date");
         }
 
-
 //        if form date is greater than to date then return error
         if (fromDate != null && toDate != null && fromDate.isAfter(toDate))
             throw new IllegalArgumentException("From date cannot be greater than to date");
 
-
-        return ResponseEntity.ok().body(entryServices.entranceRecords(index, faculty, fromDate, toDate, skip, take));
+        return ResponseEntity.ok().body(entryService.entranceRecords(index, faculty, fromDate, toDate, skip, take));
     }
 
 }
