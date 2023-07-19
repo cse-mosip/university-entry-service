@@ -16,7 +16,7 @@ import com.cse19.ue.dto.response.UserVerificationResponse;
 // this controller will be removed/ renamed
 
 @RestController
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/api/v1/entry")
 public class EntryLogController {
 
     @Autowired

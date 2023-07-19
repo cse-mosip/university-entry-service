@@ -1,19 +1,16 @@
 package com.cse19.ue.controller;
 
+import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.service.EntryServices;
+import com.cse19.ue.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Slf4j
 @RestController
@@ -21,10 +18,18 @@ import java.util.Date;
 @RequestMapping("/api/v1/admin")
 public class AdminController {
     private final EntryServices entryServices;
+    private final PersonService personService;
 
-    @GetMapping("/register")
+    @GetMapping("/")
     public String register() {
         return "hello";
+    }
+
+    @GetMapping("/person/{index}")
+    public ResponseEntity<PersonInfo> entranceRecordsByIndex(@PathVariable String index) {
+//        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = "sdfswedfsd-security-token"; //jwt.getTokenValue();
+        return ResponseEntity.ok().body(personService.personInfo(index, token));
     }
 
     @GetMapping("/entrance-records")
@@ -36,8 +41,6 @@ public class AdminController {
             @RequestParam(required = false) Integer skip,
             @RequestParam(required = false) Integer take
     ) {
-        log.warn("entranceRecords");
-
 
 //        check skip has to be greater than if not set to zero
         if (skip == null || skip < 0) {
@@ -48,7 +51,6 @@ public class AdminController {
             take = 100;
         }
 
-        log.warn("take :{}", take);
 
         LocalDateTime fromDate = null;
         LocalDateTime toDate = null;

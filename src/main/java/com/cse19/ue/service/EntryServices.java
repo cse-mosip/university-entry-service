@@ -1,17 +1,12 @@
 package com.cse19.ue.service;
 
 
-import com.cse19.ue.dto.EntryRecord;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.repository.EntranceLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 
 @Slf4j
@@ -31,4 +26,5 @@ public class EntryServices {
 
         return entranceLogRepository.filterEntranceLogs(index, faculty, fromDate, toDate, skip, take);
     }
+
 }

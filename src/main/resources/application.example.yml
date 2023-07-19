@@ -11,3 +11,11 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret:
+  expiration:
+
+services:
+  registration:
+    url: http://localhost:8080
