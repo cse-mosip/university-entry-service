@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterRequest request) {
-        return ResponseEntity.created(null)
-                .body(authService.register(request));
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<String> register(@RequestBody UserRegisterRequest request) {
+//        return ResponseEntity.created(null)
+//                .body(authService.register(request));
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {

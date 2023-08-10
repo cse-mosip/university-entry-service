@@ -36,7 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> {
                             auth.requestMatchers("/api/v1/auth/**", "/api/v1/health-check/**").permitAll();
-                            auth.requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.name());
+                            auth.requestMatchers("/api/v1/admin/**", "/api/v1/gates/**").hasAuthority(Role.ADMIN.name());
+                            auth.requestMatchers("/api/v1/entry/**").hasAuthority(Role.SECURITY.name());
                             auth.anyRequest().authenticated();
                         }
                 )

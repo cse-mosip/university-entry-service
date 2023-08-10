@@ -1,5 +1,6 @@
 package com.cse19.ue.service;
 
+import com.cse19.ue.dto.AuthVerify;
 import com.cse19.ue.dto.Token;
 import com.cse19.ue.dto.request.LoginRequest;
 import com.cse19.ue.dto.request.UserRegisterRequest;
@@ -9,19 +10,35 @@ import com.cse19.ue.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 import com.cse19.ue.model.User;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    @Value("${services.registration.url}")
+    private String REGISTRATION_SERVICE;
+    private final WebClient webClient = WebClient.builder().build();
+
+
+    @Deprecated
     public String register(UserRegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new IllegalArgumentException("Email already exists");
@@ -38,24 +55,50 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String apiEndpoint = REGISTRATION_SERVICE + "/api/public/verify";
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new IllegalArgumentException("Invalid password");
+
+        MultiValueMap<String, String> bodyValues = new LinkedMultiValueMap<>();
+        bodyValues.add("email", request.getEmail());
+        bodyValues.add("password", request.getPassword());
+
+
+        AuthVerify verifyResponse = webClient.post()
+                .uri(apiEndpoint)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromFormData(bodyValues))
+                .retrieve()
+                .bodyToMono(AuthVerify.class)
+                .block();
+//        log.info("{}", "verify response ok ");
+        log.info("{}", verifyResponse);
+
+        if (!verifyResponse.isValid())
+            throw new IllegalArgumentException("Invalid credentials");
+
+        Role authUserRole = null;
+        try {
+            authUserRole = Role.valueOf(verifyResponse.getRole().toUpperCase());
+        } catch (Exception e) {
+            log.info("{}", "invalid role type");
+            throw new IllegalArgumentException("Unauthorized");
+//            403
+        }
+
 
         String scope = "read";
-        if (user.getRole().equals(Role.ADMIN))
+        if (authUserRole.name().equals(Role.ADMIN.name()))
             scope = "read write";
 
 
         Map<String, Object> extraClaims = Map.of(
-                "role", user.getRole(),
+                "role", authUserRole.name(),
                 "scope", scope
         );
 
 
-        Token accessToken = jwtService.generateJwtToken(extraClaims, user.getEmail());
+        Token accessToken = jwtService.generateJwtToken(extraClaims, verifyResponse.getEmail());
         return AuthResponse.builder()
                 .accessToken(accessToken.getToken())
                 .expiresIn(accessToken.getExpiresIn())
