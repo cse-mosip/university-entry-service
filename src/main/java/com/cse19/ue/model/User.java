@@ -28,10 +28,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
-    private List<Guest> guests;
+//    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
+//    private List<Guest> guests;
 
-    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
-    private List<UniversityEntryLog> entries;
+//    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
+//    private List<UniversityEntryLog> entries;
 
 }
