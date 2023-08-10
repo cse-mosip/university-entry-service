@@ -1,0 +1,265 @@
+openapi: 3.0.1
+info:
+  title: University entry service API
+  description: |-
+    This is the API documentation of university entry service (MOSIP).
+  version: 1.0.0
+servers:
+  - url: http://20.235.163.35:8080
+
+tags:
+  - name: Entry
+    description: API related to registration of guest and save entry log
+  - name: Gates
+    description: API related to gates registration and getting gates related details.
+  - name: Authentication
+    description: API related to login and logout
+paths:
+  /api/v1/entry/guest-register:
+    post:
+      tags:
+        - Entry
+      summary: Save guest into the system
+      description: This endpoint will provide functionality to save the guest.
+      requestBody:
+        description: Guest registration request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestRegisterRequest'
+      responses:
+        '200':
+          description: This endpoint will provide functionality to save the guest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestRegisterResponse'
+        '500':
+          description: Invalid or missing details
+  /api/v1/entry/save-entry:
+    get:
+      tags:
+        - Entry
+      summary: Get saved Entry Log
+      description: Saves an entry log and returns the verification response.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserVerificationResponse'
+        '500':
+          description: Internal Server Error
+  /api/v1/gates:
+    get:
+      tags:
+        - Gates
+      summary: Get All Gates
+      description: Retrieve a list of all entry gates.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGatesResponse'
+        '500':
+          description: Internal Server Error
+  /api/v1/gates/register:
+    post:
+      tags:
+        - Gates
+      summary: Register Gate
+      description: Register a new entry gate.
+      requestBody:
+        description: Entry gate registration request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryPlaceRegisterRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+  /api/v1/auth/api/login:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      description: Authenticate and log in a user.
+      requestBody:
+        description: User login request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/api/logout:
+    get:
+      tags:
+        - Authentication
+      summary: User Logout
+      description: Log out the authenticated user.
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              example:
+                message: "Logout successful."
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    UserVerificationResponse:
+      type: object
+      properties:
+        studentName:
+          type: string
+        index:
+          type: string
+        verificationStatus:
+          type: string
+    GuestRegisterRequest:
+      type: object
+      properties:
+        title:
+          $ref: '#/components/schemas/Title'
+        name:
+          type: string
+          example: "User"
+        phoneNumber:
+          type: string
+          example: "+94123456789"
+        NIC:
+          type: string
+          example: "123456789V"
+        gender:
+          $ref: '#/components/schemas/Gender'
+        inviterIndex:
+          type: string
+          example: "INV123"
+        bioSign:
+          type: object
+        approverId:
+          type: integer
+          example: 123
+    Title:
+      type: string
+      enum: [ MR,MRS,MISS,MS,DR,PROF,SIR,MADAM ]
+      example: MR
+    Gender:
+      type: string
+      enum: [ MALE, FEMALE ]
+      example: MALE
+    GuestRegisterResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          $ref: '#/components/schemas/Title'
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        NIC:
+          type: string
+        gender:
+          $ref: '#/components/schemas/Gender'
+        inviterIndex:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        approver:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+    Role:
+      type: string
+      enum: [ SECURITY,STUDENT,ADMIN ]
+    GetGatesResponse:
+      type: object
+      properties:
+        gates:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntryPlaceDto'
+    EntryPlaceDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    EntryPlaceRegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "entryPlace"
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "user@gmail.com"
+        password:
+          type: string
+          example: "password"
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+        tokenType:
+          type: string
+        scope:
+          type: string
