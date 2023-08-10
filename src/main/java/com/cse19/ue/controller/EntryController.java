@@ -28,12 +28,9 @@ public class EntryController {
 
         // Get the principal (user details) from the authentication
         String subject = authentication.getPrincipal().toString();
-        try {
-            UserVerificationResponse response = entryService.saveEntryLog(request, subject);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        UserVerificationResponse response = entryService.saveEntryLog(request, subject);
+        return ResponseEntity.ok(response);
+
     }
 
     @ResponseBody

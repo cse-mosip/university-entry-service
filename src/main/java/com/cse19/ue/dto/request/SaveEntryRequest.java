@@ -15,5 +15,6 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SaveEntryRequest {
+    private int entryPlaceId;
     private String bioSign;
 }
