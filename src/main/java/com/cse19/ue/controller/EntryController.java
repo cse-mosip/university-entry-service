@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.cse19.ue.dto.response.UserVerificationResponse;
 
-
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +19,9 @@ public class EntryController {
     private final UniversityEntryService universityEntryService;
 
     @GetMapping("/save-entry")
-    public ResponseEntity<UserVerificationResponse> saveEntryLog() {
+    public ResponseEntity<UserVerificationResponse> saveEntryLog(@RequestBody Object bioData) {
         try {
-            UserVerificationResponse response = entryService.saveEntryLog();
+            UserVerificationResponse response = entryService.saveEntryLog(bioData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
