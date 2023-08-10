@@ -4,8 +4,10 @@ package com.cse19.ue.service;
 import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.model.EntryPlace;
 import com.cse19.ue.model.EntryState;
 import com.cse19.ue.model.UniversityEntryLog;
+import com.cse19.ue.repository.EntryPlaceRepository;
 import com.cse19.ue.repository.ExtendedEntryLogRepository;
 import com.cse19.ue.repository.EntryLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 public class EntryService {
     private final EntryLogRepository entryLogRepository;
     private final ExtendedEntryLogRepository extendedEntryLogRepository;
+    private final EntryPlaceRepository entryPlaceRepository;
 
     public EntranceRecordsResponse entranceRecords(
             String index,
@@ -40,10 +43,15 @@ public class EntryService {
 
             // TODO: verify from auth server
 
+
+            EntryPlace entryPlace = entryPlaceRepository
+                    .findById(request.getEntryPlaceId()).orElseThrow();
+
+
             UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
-//                    .entryPlace()
-//                    .approverEmail()
-//                    .state(EntryState.IN)
+                    .state(EntryState.IN)
+                    .timestamp(LocalDateTime.now())
+                    .entryPlace(entryPlace)
                     .approverEmail(subject)
                     .build();
             entryLogRepository.save(universityEntryLog);
