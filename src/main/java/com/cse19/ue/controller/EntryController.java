@@ -1,6 +1,7 @@
 package com.cse19.ue.controller;
 
 import com.cse19.ue.dto.request.GuestRegisterRequest;
+import com.cse19.ue.dto.request.UserVerificationRequest;
 import com.cse19.ue.service.EntryService;
 import com.cse19.ue.service.UniversityEntryService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,9 @@ public class EntryController {
     private final UniversityEntryService universityEntryService;
 
     @GetMapping("/save-entry")
-    public ResponseEntity<UserVerificationResponse> saveEntryLog() {
-        try {
-            UserVerificationResponse response = entryService.saveEntryLog();
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<UserVerificationResponse> saveEntryLog(@RequestBody UserVerificationRequest request) {
+        log.info("request received: " + request);
+        return ResponseEntity.ok().body(entryService.saveEntryLog());
     }
 
     @ResponseBody
