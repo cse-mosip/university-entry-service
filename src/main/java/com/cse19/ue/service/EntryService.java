@@ -52,18 +52,14 @@ public class EntryService {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-            HttpEntity<Object> httpEntity = new HttpEntity<>(bioData, headers);
+            HttpEntity<Object> httpEntity = new HttpEntity<>(request.getBioSign(), headers);
             ResponseEntity<?> authResult = restTemplate.exchange(uri, HttpMethod.GET,httpEntity, Object.class);
 
             Object result = authResult.getBody();
-            //return result;
 
-            // TODO: verify from auth server
-
-
+            log.info("{}",result);
             EntryPlace entryPlace = entryPlaceRepository
                     .findById(request.getEntryPlaceId()).orElseThrow();
-
 
             UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
                     .state(EntryState.IN)
@@ -71,7 +67,9 @@ public class EntryService {
                     .entryPlace(entryPlace)
                     .approverEmail(subject)
                     .build();
+
             entryLogRepository.save(universityEntryLog);
+
 
             return new UserVerificationResponse("kumara", "190999A", "verified");
         } catch (Exception e) {
