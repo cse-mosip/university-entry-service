@@ -1,8 +1,13 @@
 package com.cse19.ue.service;
 
+
+import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.model.EntryPlace;
+import com.cse19.ue.model.EntryState;
 import com.cse19.ue.model.UniversityEntryLog;
+import com.cse19.ue.repository.EntryPlaceRepository;
 import com.cse19.ue.model.User;
 import com.cse19.ue.repository.ExtendedEntryLogRepository;
 import com.cse19.ue.repository.EntryLogRepository;
@@ -10,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -21,6 +27,7 @@ import java.util.Collections;
 public class EntryService {
     private final EntryLogRepository entryLogRepository;
     private final ExtendedEntryLogRepository extendedEntryLogRepository;
+    private final EntryPlaceRepository entryPlaceRepository;
 
     public EntranceRecordsResponse entranceRecords(
             String index,
@@ -35,7 +42,7 @@ public class EntryService {
     }
 
 
-    public UserVerificationResponse saveEntryLog( Object bioData ) {
+    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) {
         try {
 
             RestTemplate restTemplate = new RestTemplate();
@@ -53,19 +60,20 @@ public class EntryService {
 
             // TODO: verify from auth server
 
-            UniversityEntryLog universityEntryLog = new UniversityEntryLog();
-            if (result != null) {
-                universityEntryLog.setIndex( ((User) result).getId().toString() );
-                universityEntryLog.setTimestamp( LocalDateTime.now() );
-                universityEntryLog.setApprover( (User) result );
-                universityEntryLog.setEntryPlace( null );
-                universityEntryLog.setState( null );
-                entryLogRepository.save(universityEntryLog);
-                return new UserVerificationResponse( ((User) result).getName(), ((User) result).getId().toString(), "verified");
-            }
-            else{
-                throw new Exception();
-            }
+
+            EntryPlace entryPlace = entryPlaceRepository
+                    .findById(request.getEntryPlaceId()).orElseThrow();
+
+
+            UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
+                    .state(EntryState.IN)
+                    .timestamp(LocalDateTime.now())
+                    .entryPlace(entryPlace)
+                    .approverEmail(subject)
+                    .build();
+            entryLogRepository.save(universityEntryLog);
+
+            return new UserVerificationResponse("kumara", "190999A", "verified");
         } catch (Exception e) {
 
             return new UserVerificationResponse("kumara", "190999A", "failed");

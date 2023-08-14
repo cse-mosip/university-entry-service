@@ -1,15 +1,16 @@
 package com.cse19.ue.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Entity
 @Data
+@Entity
+@Builder
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +28,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
-    private List<Guest> guests;
+//    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
+//    private List<Guest> guests;
 
-    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
-    private List<UniversityEntryLog> entries;
+//    @OneToMany(mappedBy = "approver", fetch = FetchType.LAZY)
+//    private List<UniversityEntryLog> entries;
 
 }
