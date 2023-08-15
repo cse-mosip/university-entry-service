@@ -53,7 +53,9 @@ public class UniversityEntryService {
             HttpEntity<Object> httpEntity = new HttpEntity<>(bSign, headers);
             ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, AuthResponseDto.class);
             AuthResponseDto result = authResult.getBody();
-        } catch (Exception e) {
+
+            log.info("bio sign authenticated: " + result);
+        } catch(Exception e) {
             throw new UserNotFoundException("Invalid user");
         }
         return true;
