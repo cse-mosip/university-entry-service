@@ -97,7 +97,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         );
 
 //        FiXME: use if needed in future
-//        extraRequestContextHolder(decoded);
+        extraRequestContextHolder(decoded);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);

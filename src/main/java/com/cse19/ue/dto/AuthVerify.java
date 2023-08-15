@@ -16,4 +16,5 @@ public class AuthVerify {
     private String role;
     private String firstname;
     private String lastname;
+    private String index;
 }

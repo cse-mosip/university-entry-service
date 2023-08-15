@@ -68,18 +68,28 @@ public class JwtService {
     public Decoded decodeJwtToken(String token) {
         Claims claims = extractAllClaims(token);
 
-        if (claims.getExpiration() == null || claims.getIssuedAt() == null  ||
+        if (claims.getExpiration() == null || claims.getIssuedAt() == null ||
                 claims.getSubject() == null) {
             throw new MalformedJwtException("Invalid token.");
         }
+        if (claims.get("index") == null || claims.get("index").toString().isEmpty()) {
+            //        in here role should be ENUM Role class how to use that in here
+            return new Decoded(
+                    claims.getExpiration(),
+                    claims.getIssuedAt(),
+                    claims.getSubject(),
+                    Role.valueOf(claims.get("role", String.class))
+            );
+        }else{
+            return new Decoded(
+                    claims.getExpiration(),
+                    claims.getIssuedAt(),
+                    claims.getSubject(),
+                    Role.valueOf(claims.get("role", String.class)),
+                    claims.get("index", String.class)
+            );
+        }
 
-//        in here role should be ENUM Role class how to use that in here
-        return new Decoded(
-                claims.getExpiration(),
-                claims.getIssuedAt(),
-                claims.getSubject(),
-                Role.valueOf(claims.get("role", String.class))
-        );
     }
 
 //    private boolean isTokenExpired(String token) throws InvalidJwtTokenException {

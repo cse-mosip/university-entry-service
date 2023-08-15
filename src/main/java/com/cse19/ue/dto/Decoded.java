@@ -15,4 +15,13 @@ public class Decoded {
     private Date issuedTime;
     private String email;
     private Role role;
+    private String index;
+
+    public Decoded(Date expiryTime, Date issuedTime, String email, Role role) {
+        this.expiryTime = expiryTime;
+        this.issuedTime = issuedTime;
+        this.email = email;
+        this.role = role;
+    }
+
 }
