@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SaveEntryRequest {
     private int entryPlaceId;
-    private String bioSign;
+    private Object bioSign;
 }
