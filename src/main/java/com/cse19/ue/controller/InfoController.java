@@ -22,9 +22,7 @@ public class InfoController {
 
     @GetMapping("/{index}")
     public ResponseEntity<PersonInfo> entranceRecordsByIndex(@PathVariable String index) {
-//        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String token = "sdfswedfsd-security-token"; //jwt.getTokenValue();
-        return ResponseEntity.ok().body(personService.personInfo(index, token));
+        return ResponseEntity.ok().body(personService.personInfo(index));
     }
 
     @GetMapping("/entrance-records")

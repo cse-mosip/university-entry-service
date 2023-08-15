@@ -86,17 +86,14 @@ public class AuthService {
 //            403
         }
 
-
         String scope = "read";
         if (authUserRole.name().equals(Role.ADMIN.name()))
             scope = "read write";
-
 
         Map<String, Object> extraClaims = Map.of(
                 "role", authUserRole.name(),
                 "scope", scope
         );
-
 
         Token accessToken = jwtService.generateJwtToken(extraClaims, verifyResponse.getEmail());
         return AuthResponse.builder()

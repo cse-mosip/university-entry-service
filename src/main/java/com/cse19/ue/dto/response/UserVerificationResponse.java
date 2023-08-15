@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class UserVerificationResponse {
-    private String studentName;
+    private String name;
     private String index;
-    private String verificationStatus;
+    private String photo;
+    private boolean success;
 }

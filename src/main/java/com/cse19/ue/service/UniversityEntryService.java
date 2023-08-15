@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UniversityEntryService{
+public class UniversityEntryService {
     private GuestRepository guestRepository;
 
     @Autowired
@@ -21,11 +21,11 @@ public class UniversityEntryService{
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Object validateBSign(Object bSign){
-        if(bSign == null){
+    public Object validateBSign(Object bSign) {
+        if (bSign == null) {
             System.out.println("bsign is null");
             throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_CANNOT_BE_NULL);
-        }else if(false){
+        } else if (false) {
             System.out.println("bsign is false");
 
 //            update condition with biometric response receiving method
@@ -35,30 +35,30 @@ public class UniversityEntryService{
     }
 
 
-    public User retrieveUser(String approverId){
+    public User retrieveUser(String approverId) {
         //logic for retriever user using id
-        if(false)
+        if (false)
             throw new Exceptions(ResponseStatusCodes.USER_NOT_EXIST_FOR_APPROVER_ID);
         return new User();
     }
 
 
-    public Guest addGuest(GuestRegisterRequest request){
+    public Guest addGuest(GuestRegisterRequest request, String subject) {
         System.out.println(request.toString());
         validateBSign(request.getBioSign());
 
         Guest guest = new Guest();
 
         // get User from request.getApproverId()
-        guest.setApprover(new User(){{
-            setId(request.getApproverId());
-        }});
-
+//        guest.setApprover(new User(){{
+//            setId(request.getApproverId());
+//        }});
+        guest.setApproverEmail(subject);
         guest.setInviterIndex(request.getInviterIndex());
         guest.setName(request.getName());
         guest.setNIC(request.getNIC());
 //        String gender = request.getGender();
-        guest.setGender( request.getGender());
+        guest.setGender(request.getGender());
         guest.setPhoneNumber(request.getPhoneNumber());
         guest.setTitle(request.getTitle());
         guest.setTimestamp();

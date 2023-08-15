@@ -1,16 +1,28 @@
 package com.cse19.ue.service;
 
 
+import com.cse19.ue.dto.AuthResponseDto;
+import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
+import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.model.EntryPlace;
+import com.cse19.ue.model.EntryState;
 import com.cse19.ue.model.UniversityEntryLog;
+import com.cse19.ue.repository.EntryPlaceRepository;
+import com.cse19.ue.model.User;
 import com.cse19.ue.repository.ExtendedEntryLogRepository;
 import com.cse19.ue.repository.EntryLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Slf4j
 @Service
@@ -18,6 +30,11 @@ import java.time.LocalDateTime;
 public class EntryService {
     private final EntryLogRepository entryLogRepository;
     private final ExtendedEntryLogRepository extendedEntryLogRepository;
+    private final EntryPlaceRepository entryPlaceRepository;
+    private final PersonService personService;
+
+    @Value("${services.authentication.url}")
+    private String AUTHENTICATION_URL;
 
     public EntranceRecordsResponse entranceRecords(
             String index,
@@ -32,20 +49,46 @@ public class EntryService {
     }
 
 
-    public UserVerificationResponse saveEntryLog() {
-        try {
+    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) {
 
-            // TODO: verify from auth server
+        RestTemplate restTemplate = new RestTemplate();
+        String uri = AUTHENTICATION_URL + "/reg/rcapture"; //AuthServer address
 
-            UniversityEntryLog universityEntryLog = new UniversityEntryLog();
-            entryLogRepository.save(universityEntryLog);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-            return new UserVerificationResponse("kumara", "190999A", "verified");
-        } catch (Exception e) {
+        HttpEntity<Object> httpEntity = new HttpEntity<>(request.getBioSign(), headers);
+        ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, AuthResponseDto.class);
 
-            return new UserVerificationResponse("kumara", "190999A", "failed");
+        AuthResponseDto result = authResult.getBody();
 
-        }
+        if (result.getMessage().equals("no match found"))
+            log.error("invalid user");
+        // throw exception
+
+        PersonInfo personInfo = personService.personInfo(result.getMessage());
+
+        UserVerificationResponse userVerificationResponse = UserVerificationResponse.builder()
+                .name(String.format("%s %s", personInfo.getFirstName(), personInfo.getLastName()))
+                .index(personInfo.getIndex())
+                .photo("photo")
+                .build();
+
+        EntryPlace entryPlace = entryPlaceRepository
+                .findById(request.getEntryPlaceId()).orElseThrow();
+
+        UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
+                .state(EntryState.IN)
+                .timestamp(LocalDateTime.now())
+                .entryPlace(entryPlace)
+                .approverEmail(subject)
+                .build();
+
+        entryLogRepository.save(universityEntryLog);
+
+        return userVerificationResponse;
+
     }
 
 }
