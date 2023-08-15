@@ -11,20 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class ErrorHandler {
 
-    private final String CUSTOM_EXCEPTION = "custom exception";
+    private final String USER_NOT_FOUND = "User not found exception";
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorHandlerDto> handle(CustomException ex) {
-        log.error(CUSTOM_EXCEPTION, ex);
-        ErrorHandlerDto errorHandlerDto = new ErrorHandlerDto(CUSTOM_EXCEPTION, ex.getMessage());
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorHandlerDto> handle(UserNotFoundException ex) {
+        log.error(USER_NOT_FOUND, ex);
+        ErrorHandlerDto errorHandlerDto = new ErrorHandlerDto(USER_NOT_FOUND, ex.getMessage());
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorHandlerDto);
     }
-
-//    @ExceptionHandler(DataSavingException.class)
-//    public ResponseEntity<String> handle(DataSavingException ex) {
-//        log.error(CUSTOM_EXCEPTION, ex);
-//        ErrorHandlerDto errorHandlerDTO = new ErrorHandlerDTO(DATA_SAVING_EXCEPTION, ex.getMessage());
-//        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(gson.toJson(errorHandlerDTO, ErrorHandlerDTO.class));
-//    }
-
 }
