@@ -87,6 +87,7 @@ public class EntryService {
                     .findById(request.getEntryPlaceId()).orElseThrow();
 
             UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
+                    .index(personInfo.getIndex())
                     .state(EntryState.IN)
                     .timestamp(LocalDateTime.now())
                     .entryPlace(entryPlace)

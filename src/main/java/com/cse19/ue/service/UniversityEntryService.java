@@ -42,7 +42,6 @@ public class UniversityEntryService {
             log.error("bsign is null");
             throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_CANNOT_BE_NULL);
         }
-
         RestTemplate restTemplate = new RestTemplate();
         String uri = AUTHENTICATION_URL + "/upload"; //AuthServer address
 
@@ -51,10 +50,8 @@ public class UniversityEntryService {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-
             HttpEntity<Object> httpEntity = new HttpEntity<>(bSign, headers);
             ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, AuthResponseDto.class);
-
             AuthResponseDto result = authResult.getBody();
 
             log.info("bio sign authenticated: " + result);
@@ -74,18 +71,16 @@ public class UniversityEntryService {
 
 
     public Guest addGuest(GuestRegisterRequest request, String subject) throws UserNotFoundException {
-        log.info(request.toString());
 
         validateBSign(request.getBioSign());
-
         Guest guest = Guest.builder()
-                .approverEmail(subject)
-                .inviterIndex(request.getInviterIndex())
+                .title(request.getTitle())
                 .name(request.getName())
+                .phoneNumber(request.getPhoneNumber())
                 .NIC(request.getNIC())
                 .gender(request.getGender())
-                .phoneNumber(request.getPhoneNumber())
                 .timestamp(LocalDateTime.now())
+                .approverEmail(subject)
                 .build();
 
         // get User from request.getApproverId()

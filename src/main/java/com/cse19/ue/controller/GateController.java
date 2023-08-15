@@ -25,7 +25,7 @@ public class GateController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody EntryPlaceRegisterRequest request) {
         try {
-            entryPlaceService.registerUser(request);
+            entryPlaceService.gateRegister(request);
             return ResponseEntity.ok("Gate registered successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

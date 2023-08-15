@@ -20,7 +20,7 @@ public class EntryPlaceService {
     @Autowired
     private EntryPlaceRepository entryPlaceRepository;
 
-    public EntryPlace registerUser(EntryPlaceRegisterRequest request) {
+    public EntryPlace gateRegister(EntryPlaceRegisterRequest request) {
 //        if (entryPlaceRepository.findById(entryPlace.getId()).isPresent()) {
 //            throw new RuntimeException("Entry Place already exists");
 //        }
@@ -29,6 +29,7 @@ public class EntryPlaceService {
         }
         EntryPlace entryPlace = EntryPlace.builder()
                 .name(request.getName())
+                .location(request.getLocation())
                 .build();
 
         return entryPlaceRepository.save(entryPlace);
@@ -47,6 +48,6 @@ public class EntryPlaceService {
     }
 
     private EntryPlaceDto mapToEntryPlaceDTO(EntryPlace entryPlace) {
-        return new EntryPlaceDto(entryPlace.getId(), entryPlace.getName());
+        return new EntryPlaceDto(entryPlace.getId(), entryPlace.getName(), entryPlace.getLocation());
     }
 }

@@ -83,8 +83,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 //        UserDetails userDetails = new UserDetails(Long.parseLong(decoded.getUsername()),
 //                Integer.parseInt(decoded.getUserType()));
 
-        log.warn("decoded: " + decoded.toString());
-
         Collection<? extends GrantedAuthority> roles = List.of(new SimpleGrantedAuthority(decoded.getRole().name()));
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 decoded.getEmail(),

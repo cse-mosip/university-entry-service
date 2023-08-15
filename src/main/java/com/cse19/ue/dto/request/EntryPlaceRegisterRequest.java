@@ -16,4 +16,5 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class EntryPlaceRegisterRequest {
     private String name;
+    private String location;
 }
