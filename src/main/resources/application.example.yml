@@ -24,6 +24,6 @@ jwt:
 
 services:
   registration:
-    url: http://localhost:8080
+    url: http://20.84.34.69/registration-service
   authentication:
     url: https://biometric-sdk-svc-docker.onrender.com/

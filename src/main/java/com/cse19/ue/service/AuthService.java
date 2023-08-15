@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -90,10 +91,13 @@ public class AuthService {
         if (authUserRole.name().equals(Role.ADMIN.name()))
             scope = "read write";
 
-        Map<String, Object> extraClaims = Map.of(
+        Map<String, Object> extraClaims = new HashMap<>(Map.of(
                 "role", authUserRole.name(),
                 "scope", scope
-        );
+        ));
+        if (verifyResponse.getIndex() != null && !verifyResponse.getIndex().isEmpty())
+            extraClaims.put("index", verifyResponse.getIndex());
+
 
         Token accessToken = jwtService.generateJwtToken(extraClaims, verifyResponse.getEmail());
         return AuthResponse.builder()

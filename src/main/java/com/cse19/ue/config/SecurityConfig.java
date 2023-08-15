@@ -36,8 +36,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> {
                             auth.requestMatchers("/api/v1/auth/**", "/api/v1/health-check/**").permitAll();
-                            auth.requestMatchers("/api/v1/admin/**", "/api/v1/gates/register").hasAuthority(Role.ADMIN.name());
+                            auth.requestMatchers("/api/v1/admin/**", "/api/v1/gates/register", "/api/v1/info/entrance-records", "/api/v1/info/{index}").hasAuthority(Role.ADMIN.name());
                             auth.requestMatchers("/api/v1/entry/**").hasAuthority(Role.SECURITY.name());
+                            auth.requestMatchers("/api/v1/info/my/**").hasAuthority(Role.STUDENT.name());
                             auth.anyRequest().authenticated();
                         }
                 )
