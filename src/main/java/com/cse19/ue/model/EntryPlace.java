@@ -19,7 +19,8 @@ public class EntryPlace {
     private Integer id;
     @Column(nullable = false)
     private String name;
-
+    @Column(nullable = false)
+    private String location;
     @OneToMany(mappedBy = "entryPlace", fetch = FetchType.LAZY)
     private List<UniversityEntryLog> entries;
 }

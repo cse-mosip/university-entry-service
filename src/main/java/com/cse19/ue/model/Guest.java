@@ -27,8 +27,6 @@ public class Guest {
     @Column(nullable = false)
     private Gender gender;
     @Column(nullable = false)
-    private String inviterIndex;
-    @Column(nullable = false)
     private LocalDateTime timestamp;
 
     //    @ManyToOne(fetch = FetchType.LAZY, optional = false)

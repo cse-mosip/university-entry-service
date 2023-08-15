@@ -84,12 +84,14 @@ public class EntryService {
                     .findById(request.getEntryPlaceId()).orElseThrow();
 
             UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
+                    .index(personInfo.getIndex())
                     .state(EntryState.IN)
                     .timestamp(LocalDateTime.now())
                     .entryPlace(entryPlace)
                     .approverEmail(subject)
                     .build();
 
+            log.warn("before save");
             entryLogRepository.save(universityEntryLog);
 
             return userVerificationResponse;
