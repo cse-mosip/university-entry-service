@@ -24,7 +24,7 @@ public class EntryController {
     private final EntryService entryService;
     private final UniversityEntryService universityEntryService;
 
-    @GetMapping("/save-entry")
+    @PostMapping("/save-entry")
     public ResponseEntity<UserVerificationResponse> saveEntryLog(@RequestBody SaveEntryRequest request) throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
