@@ -2,6 +2,7 @@ package com.cse19.ue.controller;
 
 import com.cse19.ue.dto.request.GuestRegisterRequest;
 import com.cse19.ue.dto.request.SaveEntryRequest;
+import com.cse19.ue.exception.UserNotFoundException;
 import com.cse19.ue.service.EntryService;
 import com.cse19.ue.service.UniversityEntryService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class EntryController {
     private final UniversityEntryService universityEntryService;
 
     @GetMapping("/save-entry")
-    public ResponseEntity<UserVerificationResponse> saveEntryLog(@RequestBody SaveEntryRequest request) {
+    public ResponseEntity<UserVerificationResponse> saveEntryLog(@RequestBody SaveEntryRequest request) throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Get the principal (user details) from the authentication
