@@ -6,6 +6,7 @@ import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.exception.DataSavingException;
 import com.cse19.ue.exception.UserNotFoundException;
 import com.cse19.ue.model.EntryPlace;
 import com.cse19.ue.model.EntryState;
@@ -52,7 +53,9 @@ public class EntryService {
     }
 
 
-    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) throws UserNotFoundException {
+    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) throws Exception {
+
+        log.info("## request consumed");
 
         RestTemplate restTemplate = new RestTemplate();
         String uri = AUTHENTICATION_URL + "/upload"; //AuthServer address
@@ -62,16 +65,16 @@ public class EntryService {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-//        AuthRequestDto authRequestDto = AuthRequestDto.builder()
-//                .data(request.getBioSign())
-//                .build();
-
-//        HttpEntity<AuthRequestDto> httpEntity = new HttpEntity<>(authRequestDto, headers);
             HttpEntity<Object> httpEntity = new HttpEntity<>((Object) request.getBioSign(), headers);
             ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, AuthResponseDto.class);
 
             AuthResponseDto result = authResult.getBody();
+
+            log.info("## result" + result);
+
             PersonInfo personInfo = personService.personInfo(result.getMessage());
+
+            log.info("## user from reg service: " + personInfo);
 
             UserVerificationResponse userVerificationResponse = UserVerificationResponse.builder()
                     .name(String.format("%s %s", personInfo.getFirstName(), personInfo.getLastName()))
@@ -90,12 +93,16 @@ public class EntryService {
                     .approverEmail(subject)
                     .build();
 
-            entryLogRepository.save(universityEntryLog);
+            try {
+                entryLogRepository.save(universityEntryLog);
+            } catch (Exception e) {
+                throw new DataSavingException("Failed to save entry log");
+            }
 
             return userVerificationResponse;
 
         } catch (Exception e) {
-            throw new UserNotFoundException("Invalid user");
+            throw new UserNotFoundException("Failed to authenticate user");
         }
 
 

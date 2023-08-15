@@ -57,6 +57,7 @@ public class UniversityEntryService {
 
             AuthResponseDto result = authResult.getBody();
 
+            log.info("bio sign authenticated: " + result);
         } catch(Exception e) {
             throw new UserNotFoundException("Invalid user");
         }
