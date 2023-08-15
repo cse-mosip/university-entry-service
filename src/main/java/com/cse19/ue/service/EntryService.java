@@ -91,7 +91,6 @@ public class EntryService {
                     .approverEmail(subject)
                     .build();
 
-            log.warn("before save");
             entryLogRepository.save(universityEntryLog);
 
             return userVerificationResponse;
