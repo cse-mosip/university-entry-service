@@ -37,7 +37,7 @@ public class EntryController {
 
     @ResponseBody
     @PostMapping(value = "/guest-register")
-    public ResponseEntity<?> handleForm(@RequestBody GuestRegisterRequest request) {
+    public ResponseEntity<?> handleForm(@RequestBody GuestRegisterRequest request) throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Get the principal (user details) from the authentication
