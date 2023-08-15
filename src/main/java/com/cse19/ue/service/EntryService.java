@@ -6,8 +6,6 @@ import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.UserVerificationResponse;
-import com.cse19.ue.exception.ErrorHandler;
-import com.cse19.ue.exception.Exceptions;
 import com.cse19.ue.exception.UserNotFoundException;
 import com.cse19.ue.model.EntryPlace;
 import com.cse19.ue.model.EntryState;
@@ -36,9 +34,10 @@ public class EntryService {
     private final EntryPlaceRepository entryPlaceRepository;
     private final PersonService personService;
 
+    private final String NO_MATCH_FOUND = "no match found";
+
     @Value("${services.authentication.url}")
     private String AUTHENTICATION_URL;
-    private String NO_MATCH_FOUND = "no match found";
 
     public EntranceRecordsResponse entranceRecords(
             String index,
@@ -56,41 +55,49 @@ public class EntryService {
     public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) throws UserNotFoundException {
 
         RestTemplate restTemplate = new RestTemplate();
-        String uri = AUTHENTICATION_URL + "/reg/rcapture"; //AuthServer address
+        String uri = AUTHENTICATION_URL + "/upload"; //AuthServer address
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-        HttpEntity<Object> httpEntity = new HttpEntity<>(request.getBioSign(), headers);
-        ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, AuthResponseDto.class);
+//        AuthRequestDto authRequestDto = AuthRequestDto.builder()
+//                .data(request.getBioSign())
+//                .build();
 
-        AuthResponseDto result = authResult.getBody();
+//        HttpEntity<AuthRequestDto> httpEntity = new HttpEntity<>(authRequestDto, headers);
+            HttpEntity<Object> httpEntity = new HttpEntity<>((Object) request.getBioSign(), headers);
+            ResponseEntity<AuthResponseDto> authResult = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, AuthResponseDto.class);
 
-        if (result.getMessage().equals(NO_MATCH_FOUND))
+            AuthResponseDto result = authResult.getBody();
+            PersonInfo personInfo = personService.personInfo(result.getMessage());
+
+            UserVerificationResponse userVerificationResponse = UserVerificationResponse.builder()
+                    .name(String.format("%s %s", personInfo.getFirstName(), personInfo.getLastName()))
+                    .index(personInfo.getIndex())
+                    .photo("photo")
+                    .success(true)
+                    .build();
+
+            EntryPlace entryPlace = entryPlaceRepository
+                    .findById(request.getEntryPlaceId()).orElseThrow();
+
+            UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
+                    .state(EntryState.IN)
+                    .timestamp(LocalDateTime.now())
+                    .entryPlace(entryPlace)
+                    .approverEmail(subject)
+                    .build();
+
+            entryLogRepository.save(universityEntryLog);
+
+            return userVerificationResponse;
+
+        } catch (Exception e) {
             throw new UserNotFoundException("Invalid user");
+        }
 
-        PersonInfo personInfo = personService.personInfo(result.getMessage());
-
-        UserVerificationResponse userVerificationResponse = UserVerificationResponse.builder()
-                .name(String.format("%s %s", personInfo.getFirstName(), personInfo.getLastName()))
-                .index(personInfo.getIndex())
-                .photo("photo")
-                .build();
-
-        EntryPlace entryPlace = entryPlaceRepository
-                .findById(request.getEntryPlaceId()).orElseThrow();
-
-        UniversityEntryLog universityEntryLog = UniversityEntryLog.builder()
-                .state(EntryState.IN)
-                .timestamp(LocalDateTime.now())
-                .entryPlace(entryPlace)
-                .approverEmail(subject)
-                .build();
-
-        entryLogRepository.save(universityEntryLog);
-
-        return userVerificationResponse;
 
     }
 
