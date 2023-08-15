@@ -39,7 +39,7 @@ public class UniEntrySeeder implements CommandLineRunner {
                     .phoneNumber("1234567890")
                     .NIC("123456789X")
                     .gender(Gender.MALE)
-                    .inviterIndex("190656O")
+                    .inviterIndex("190623V")
                     .timestamp(LocalDateTime.now())
                     .approverEmail("security@gamil.com")
                     .build();
@@ -52,7 +52,7 @@ public class UniEntrySeeder implements CommandLineRunner {
                     .phoneNumber("9876543210")
                     .NIC("987654321Y")
                     .gender(Gender.FEMALE)
-                    .inviterIndex("190656O")
+                    .inviterIndex("190623V")
                     .timestamp(LocalDateTime.now())
                     .approverEmail("security@gamil.com")
                     .build();
@@ -83,7 +83,7 @@ public class UniEntrySeeder implements CommandLineRunner {
         EntryPlace entryPlace = entryPlaceRepository.findEntryPlaceByName("Main Entrance");
         if (entryPlaceRepository.findByName("Main Entrance").isEmpty()) {
             UniversityEntryLog entryLog1 = UniversityEntryLog.builder()
-                    .index("190656O")
+                    .index("190623V")
                     .state(EntryState.IN)
                     .timestamp(LocalDateTime.now())
                     .approverEmail("security@gmail.com")
