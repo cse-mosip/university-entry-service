@@ -9,4 +9,5 @@ public interface EntryPlaceRepository extends JpaRepository<EntryPlace, Integer>
 
 
     Optional<Object> findByName(String name);
+    EntryPlace findEntryPlaceByName(String name);
 }
