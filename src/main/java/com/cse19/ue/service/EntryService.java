@@ -6,6 +6,9 @@ import com.cse19.ue.dto.request.SaveEntryRequest;
 import com.cse19.ue.dto.response.EntranceRecordsResponse;
 import com.cse19.ue.dto.response.PersonInfo;
 import com.cse19.ue.dto.response.UserVerificationResponse;
+import com.cse19.ue.exception.ErrorHandler;
+import com.cse19.ue.exception.Exceptions;
+import com.cse19.ue.exception.UserNotFoundException;
 import com.cse19.ue.model.EntryPlace;
 import com.cse19.ue.model.EntryState;
 import com.cse19.ue.model.UniversityEntryLog;
@@ -35,6 +38,7 @@ public class EntryService {
 
     @Value("${services.authentication.url}")
     private String AUTHENTICATION_URL;
+    private String NO_MATCH_FOUND = "no match found";
 
     public EntranceRecordsResponse entranceRecords(
             String index,
@@ -49,7 +53,7 @@ public class EntryService {
     }
 
 
-    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) {
+    public UserVerificationResponse saveEntryLog(SaveEntryRequest request, String subject) throws UserNotFoundException {
 
         RestTemplate restTemplate = new RestTemplate();
         String uri = AUTHENTICATION_URL + "/reg/rcapture"; //AuthServer address
@@ -63,9 +67,8 @@ public class EntryService {
 
         AuthResponseDto result = authResult.getBody();
 
-        if (result.getMessage().equals("no match found"))
-            log.error("invalid user");
-        // throw exception
+        if (result.getMessage().equals(NO_MATCH_FOUND))
+            throw new UserNotFoundException("Invalid user");
 
         PersonInfo personInfo = personService.personInfo(result.getMessage());
 

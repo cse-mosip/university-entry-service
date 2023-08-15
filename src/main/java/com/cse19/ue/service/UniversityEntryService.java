@@ -4,9 +4,11 @@ import com.cse19.ue.dto.request.GuestRegisterRequest;
 import com.cse19.ue.exception.Exceptions;
 import com.cse19.ue.exception.ResponseStatusCodes;
 import com.cse19.ue.model.Gender;
+import org.slf4j.Logger;
 import com.cse19.ue.model.Guest;
 import com.cse19.ue.model.User;
 import com.cse19.ue.repository.GuestRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UniversityEntryService {
     private GuestRepository guestRepository;
-
+    public static Logger logger = LoggerFactory.getLogger(UniversityEntryService.class);
     @Autowired
     public UniversityEntryService(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
@@ -23,10 +25,10 @@ public class UniversityEntryService {
     @Transactional(rollbackFor = Exception.class)
     public Object validateBSign(Object bSign) {
         if (bSign == null) {
-            System.out.println("bsign is null");
+            logger.error("bsign is null");
             throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_CANNOT_BE_NULL);
         } else if (false) {
-            System.out.println("bsign is false");
+            logger.error("bsign is false");
 
 //            update condition with biometric response receiving method
             throw new Exceptions(ResponseStatusCodes.BIOMETRIC_SIGNATURE_IS_NOT_MATCHING);
@@ -44,7 +46,7 @@ public class UniversityEntryService {
 
 
     public Guest addGuest(GuestRegisterRequest request, String subject) {
-        System.out.println(request.toString());
+        logger.info(request.toString());
         validateBSign(request.getBioSign());
 
         Guest guest = new Guest();
